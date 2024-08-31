@@ -1,13 +1,22 @@
 # LoadBalancer Service. Will only work on supported cloud platforms (AKS, EKS, GKE, DOK, IBM, LKE etc...)
+# by kubectl get svc , we can see the external ip for loadbalancer and call it in browser with proper port (ports) 
 # Listens externally on 80 and forwards to Pod/container on 8080
+
+# kubectl apply -f svc-lb.yml 
+# kubectl get svc 
+# NAME          TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+# kubernetes    ClusterIP      10.96.0.1        <none>        443/TCP        2d13h
+# ps-lb         LoadBalancer   10.100.175.209   localhost     80:31483/TCP   24s   localhost becz we aren't on cloud. k8s create it automatically if we are connected on cloud server
+# ps-nodeport   NodePort       10.111.201.145   <none>        80:31111/TCP   12m
+
 apiVersion: v1
 kind: Service
 metadata:
   name: ps-lb
 spec:
-  type: LoadBalancer
+  type: LoadBalancer   
   ports:
-  - port: 80
+  - port: 80 
     targetPort: 8080
   selector:
     app: web

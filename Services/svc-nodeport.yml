@@ -1,3 +1,43 @@
+# check il app is running => kubectl get pods
+# command to run service imperatively => kubectl expose pod hello-pod --name=hello-svc --target-port=8080 --type=NodePort
+# see the services => kubectl get svc
+# then we can connect app on => http://localhost:31025/
+# Stop service => kubectl delete svc hello-svc
+
+# whe have 3 type of services > 
+# - LoadBalancer external access via cloud load-balancer,
+# - NodePort external access via nodes, 
+# - ClusterIp (default one) internal cluster connectivity 
+
+# for knowing the label of apps (pods) run 
+# kubectl get pods --show-labels => we got the result : app=web
+
+# to start service by yaml file run this command 
+# kubectl apply -f svc-nodeport.yml 
+
+# get running services => kubectl apply -f svc-nodeport.yml
+# then we can connect app on => http://localhost:31111
+
+# kubectl describe svc ps-nodeport 
+
+# Annotations:              <none>
+# Selector:                 app=web
+# Type:                     NodePort
+# IP Family Policy:         SingleStack
+# IP Families:              IPv4
+# IP:                       10.111.201.145  cluster ip
+# IPs:                      10.111.201.145   cluster ip
+# Port:                     <unset>  80/TCP  cluster port 
+# TargetPort:               8080/TCP
+# NodePort:                 <unset>  31111/TCP  for external connection 
+# Endpoints:                10.1.0.15:8080  for inside app 
+# Session Affinity:         None
+# External Traffic Policy:  Cluster
+# Events:                   <none>
+
+# to get endpoints 
+# kubectl get ep 
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -5,10 +45,10 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - port: 80
-    targetPort: 8080
-    nodePort: 31111
+  - port: 80    # port of cluster service (cluster ip)
+    targetPort: 8080   # app container port , the port that call services of application (application  port)
+    nodePort: 31111  # external exposed port mapped by 8080, it is between (30000 - 32767)
     protocol: TCP
   selector:
-    app: web
+    app: web  # label selector , read the comment above 
     
